@@ -1,6 +1,10 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 
 
@@ -30,4 +34,15 @@ func(urepo *UserRepoSitory)DeleteUserById(id int)(error){
 		return result.Error
 	}
 	return result.Error
+}
+
+func(urepo *UserRepoSitory)FindByEmail(email string)(*User){
+	var payload User
+	result := urepo.database.First(&payload,"email = ?",email)
+	if result.Error != nil{
+		fmt.Println(result.Error.Error())
+		return nil
+	}
+	return &payload
+
 }

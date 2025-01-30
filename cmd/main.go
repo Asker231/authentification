@@ -22,8 +22,10 @@ func main() {
 	}
 	//repo
     repo :=  user.NewRepoUser(database)
+	//servisec
+	service := auth.NewAuthService(repo)
 	//handler
-	auth.NewHandleAuth(router,*repo)
+	auth.NewHandleAuth(router,service)
 	server := http.Server{
 		Addr: ":3002",
 		Handler: router,
