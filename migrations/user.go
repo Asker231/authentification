@@ -10,15 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
-func main(){
+func main() {
 	err := godotenv.Load("../.env")
-	if err != nil{
+	if err != nil {
 		fmt.Println(err.Error())
 	}
-	db,err := gorm.Open(postgres.Open(os.Getenv("DNS")),&gorm.Config{})
-	if err != nil{
+	db, err := gorm.Open(postgres.Open(os.Getenv("DNS")), &gorm.Config{})
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 	db.AutoMigrate(&user.User{})

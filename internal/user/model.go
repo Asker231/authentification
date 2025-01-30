@@ -2,9 +2,9 @@ package user
 
 import "gorm.io/gorm"
 
-type User struct{
+type User struct {
 	*gorm.Model
-	Email string `gorm:"index"`
+	Email    string `gorm:"index"`
 	Password string
-	Name string
+	Name     string
 }

@@ -3,44 +3,43 @@ package req
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"github.com/go-playground/validator/v10"
+	"net/http"
 )
 
-
-func HandleBody[T any](w http.ResponseWriter,r *http.Request)(*T, error){
+func HandleBody[T any](w http.ResponseWriter, r *http.Request) (*T, error) {
 	//decode
-	result,err :=  DecoderBody[T](r)
-	if err != nil{
+	result, err := DecoderBody[T](r)
+	if err != nil {
 		fmt.Println(err.Error())
-		return nil,err
+		return nil, err
 
 	}
 	//validation
 	err = Validation(result)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err.Error())
-		return nil,err
+		return nil, err
 	}
-	return result,nil
+	return result, nil
 }
 
-func Validation[T any](strct T)error{
+func Validation[T any](strct T) error {
 	v := validator.New()
 	err := v.Struct(strct)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
 	return err
 }
 
-func DecoderBody[T any](r *http.Request)( *T, error){
-		var payload T
-		err := json.NewDecoder(r.Body).Decode(&payload)
-		if err != nil{
-			fmt.Println(err.Error())
-			return nil,err
-		}
-		return &payload,nil
+func DecoderBody[T any](r *http.Request) (*T, error) {
+	var payload T
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	return &payload, nil
 }

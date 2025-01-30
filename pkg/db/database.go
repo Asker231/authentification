@@ -6,13 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-
-
-
-func ConnectDataBase(config *config.AppConfig)(*gorm.DB,error){
-	db,err := gorm.Open(postgres.Open(config.DNS),&gorm.Config{})
-	if err != nil{
-		return nil,err
+func ConnectDataBase(config *config.AppConfig) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(config.DNS), &gorm.Config{})
+	if err != nil {
+		return nil, err
 	}
-	return db,nil
+	return db, nil
 }

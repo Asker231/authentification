@@ -10,24 +10,23 @@ import (
 	"github.com/Asker231/authentification.git/pkg/db"
 )
 
-
 func main() {
 	router := http.NewServeMux()
 	//config
 	cnf := config.NewAppConfig()
 	//
-	database ,err := db.ConnectDataBase(cnf)
-	if err != nil{
+	database, err := db.ConnectDataBase(cnf)
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//repo
-    repo :=  user.NewRepoUser(database)
+	repo := user.NewRepoUser(database)
 	//servisec
 	service := auth.NewAuthService(repo)
 	//handler
-	auth.NewHandleAuth(router,service)
+	auth.NewHandleAuth(router, service)
 	server := http.Server{
-		Addr: ":3002",
+		Addr:    ":3002",
 		Handler: router,
 	}
 
