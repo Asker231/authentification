@@ -1,6 +1,6 @@
 package auth
 
-import "github.com/Asker231/authentification.git/internal/user"
+
 
 type (
 	RegisterRequest struct {
@@ -10,11 +10,14 @@ type (
 	}
 	RegisterResponse struct {
 		Token string     `json:"token"`
-		User  *user.User `json:"user"`
 	}
 
 	LoginRequest struct {
 		Email    string `json:"email" validate:"email,required"`
 		Password string `json:"password"`
+	}
+
+	LoginResponse struct {
+		Token string     `json:"token"`
 	}
 )

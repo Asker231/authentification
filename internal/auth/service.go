@@ -49,9 +49,11 @@ func (a *AuthService) Login(email, password string) (*user.User, error) {
 	return userExisted, nil
 
 }
-func (a *AuthService) DeleteUserByID(id int) {
+func (a *AuthService) DeletedUserByID(id int)(error){
 	err := a.repo.DeleteUserById(id)
 	if err != nil {
 		fmt.Println(err.Error())
+		return err
 	}
+	return err
 }

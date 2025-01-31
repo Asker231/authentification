@@ -25,8 +25,7 @@ func (urepo *UserRepoSitory) CreateUser(user *User) (*User, error) {
 }
 
 func (urepo *UserRepoSitory) DeleteUserById(id int) error {
-	var user User
-	result := urepo.database.Delete(&user, id)
+	result := urepo.database.Raw("DELETE FROM users WHERE id = ?",id).Scan(&User{})
 	if result.Error != nil {
 		return result.Error
 	}
