@@ -24,7 +24,7 @@ func main() {
 	//servisec
 	service := auth.NewAuthService(repo)
 	//handler
-	auth.NewHandleAuth(router, service)
+	auth.NewHandleAuth(router, service,cnf)
 	server := http.Server{
 		Addr:    ":3002",
 		Handler: router,

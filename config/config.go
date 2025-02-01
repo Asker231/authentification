@@ -9,6 +9,7 @@ import (
 
 type AppConfig struct {
 	DNS string
+	SECRET string
 }
 
 func NewAppConfig() *AppConfig {
@@ -18,5 +19,6 @@ func NewAppConfig() *AppConfig {
 	}
 	return &AppConfig{
 		DNS: os.Getenv("DNS"),
+		SECRET: os.Getenv("SECRET"),
 	}
 }
