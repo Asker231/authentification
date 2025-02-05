@@ -27,5 +27,15 @@ func(j *JWTData)CreateJWT(email string)(string,error){
 	}
 	fmt.Println(res)
 	return res,nil
+}
 
+func(j *JWTData)ParseJWT(token string)(bool,string){
+	t ,err := jwt.Parse(token,func(t *jwt.Token) (interface{}, error) {
+	    return j.Secret,nil		
+	})
+	if err != nil{
+		return false,err.Error()
+	}
+	res := t.Claims.(jwt.MapClaims)["email"]
+	return t.Valid, res.(string)
 }

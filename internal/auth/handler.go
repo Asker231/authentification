@@ -7,6 +7,7 @@ import (
 
 	"github.com/Asker231/authentification.git/config"
 	"github.com/Asker231/authentification.git/pkg/jwt"
+	"github.com/Asker231/authentification.git/pkg/middleware"
 	"github.com/Asker231/authentification.git/pkg/req"
 	"github.com/Asker231/authentification.git/pkg/res"
 )
@@ -23,7 +24,7 @@ func NewHandleAuth(router *http.ServeMux, service *AuthService,conf *config.AppC
 	}
 
 	router.HandleFunc("POST /auth/register", ah.Register())
-	router.HandleFunc("POST /auth/login", ah.Login())
+	router.Handle("POST /auth/login", middleware.IsLogin(ah.Login(),conf))
 	router.HandleFunc("DELETE /auth/delete/{id}", ah.DeleteUser())
 
 }
@@ -82,24 +83,12 @@ func (a *AuthHandler) Login() http.HandlerFunc {
 			fmt.Println(err.Error())
 			return
 		}
-
 		// Логика логина черес методы сервиса auth
-		u,err := a.userService.Login(body.Email, body.Password)
+		_ ,err = a.userService.Login(body.Email, body.Password)
 		if err != nil {
 			res.Response(w, err.Error(), 404)
 			return
 		}
-
-		// Сосздание jwt инстанса
-		result,err := jwt.NewJWTInit(a.conf.SECRET).CreateJWT(u.Email)
-		if err != nil{
-			fmt.Println(err.Error())
-			return
-		}
-
-		// Response JWT token
-		res.Response(w,RegisterResponse{
-			Token: result,
-		},201)
+		res.Response(w,"auth",200)
 	}
 }
