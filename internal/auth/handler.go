@@ -8,6 +8,8 @@ import (
 	"github.com/Asker231/authentification.git/config"
 	"github.com/Asker231/authentification.git/pkg/jwt"
 	"github.com/Asker231/authentification.git/pkg/middleware"
+
+	//"github.com/Asker231/authentification.git/pkg/middleware"
 	"github.com/Asker231/authentification.git/pkg/req"
 	"github.com/Asker231/authentification.git/pkg/res"
 )
@@ -22,10 +24,10 @@ func NewHandleAuth(router *http.ServeMux, service *AuthService,conf *config.AppC
 		userService: service,
 		conf: conf,
 	}
-
 	router.HandleFunc("POST /auth/register", ah.Register())
-	router.Handle("POST /auth/login", middleware.IsLogin(ah.Login(),conf))
+	router.Handle("POST /auth/login",  middleware.IsLogin( ah.Login(),conf))
 	router.HandleFunc("DELETE /auth/delete/{id}", ah.DeleteUser())
+	router.HandleFunc("/home",ah.HomePage())
 
 }
 
@@ -61,7 +63,9 @@ func (a *AuthHandler) Register() http.HandlerFunc {
 		}
 
 		// Сосздание jwt инстанса
-		result,err := jwt.NewJWTInit(a.conf.SECRET).CreateJWT(u.Email)
+		result,err := jwt.NewJWTInit(a.conf.SECRET).CreateJWT(jwt.JWTData{
+			Email: u.Email,
+		})
 		if err != nil{
 			fmt.Println(err.Error())
 			return
@@ -84,11 +88,27 @@ func (a *AuthHandler) Login() http.HandlerFunc {
 			return
 		}
 		// Логика логина черес методы сервиса auth
-		_ ,err = a.userService.Login(body.Email, body.Password)
+		u ,err := a.userService.Login(body.Email, body.Password)
 		if err != nil {
 			res.Response(w, err.Error(), 404)
 			return
 		}
-		res.Response(w,"auth",200)
+
+		_ ,err = jwt.NewJWTInit(a.conf.SECRET).CreateJWT(jwt.JWTData{
+			Email: u.Email,
+		})
+		if err != nil{
+			fmt.Println(err.Error())
+			return
+		}
+		
+		http.Redirect(w,r,"/home",301)
+		
+	}
+}
+
+func(a *AuthHandler)HomePage()http.HandlerFunc{
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Home page"))
 	}
 }
