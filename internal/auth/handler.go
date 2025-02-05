@@ -8,8 +8,6 @@ import (
 	"github.com/Asker231/authentification.git/config"
 	"github.com/Asker231/authentification.git/pkg/jwt"
 	"github.com/Asker231/authentification.git/pkg/middleware"
-
-	//"github.com/Asker231/authentification.git/pkg/middleware"
 	"github.com/Asker231/authentification.git/pkg/req"
 	"github.com/Asker231/authentification.git/pkg/res"
 )
@@ -94,21 +92,34 @@ func (a *AuthHandler) Login() http.HandlerFunc {
 			return
 		}
 
-		_ ,err = jwt.NewJWTInit(a.conf.SECRET).CreateJWT(jwt.JWTData{
+		t ,err := jwt.NewJWTInit(a.conf.SECRET).CreateJWT(jwt.JWTData{
 			Email: u.Email,
 		})
+
 		if err != nil{
 			fmt.Println(err.Error())
 			return
 		}
+		c := http.Cookie{
+			Name: "jwt",
+			Value: t,
+			Path: "/",
+			MaxAge: 3600,
+			HttpOnly: true,
+			Secure: true,
+			SameSite: http.SameSiteLaxMode,
+		}
+		http.SetCookie(w,&c)
 		
 		http.Redirect(w,r,"/home",301)
+
+		
 		
 	}
 }
 
 func(a *AuthHandler)HomePage()http.HandlerFunc{
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Home page"))
+		http.ServeFile(w,r,"static/index.html")	
 	}
 }
